@@ -96,7 +96,7 @@ class DetectedFaceView: UIImageView {
             
             makeLayers(face: detected)
             
-           // detectLandmarks(detected)
+            // detectLandmarks(detected)
         }
         
     }
@@ -114,88 +114,99 @@ class DetectedFaceView: UIImageView {
         //self.convertPointsForFace(faceContour, faceBoundingBox, her.skin.cgColor)
         
         let leftEye = observation.landmarks?.leftEye
-        self.convertPointsForFace(leftEye, faceBoundingBox, UIColor.white.cgColor)
+        self.drawLandmark(leftEye, faceBoundingBox, UIColor.white.cgColor)
         
         let rightEye = observation.landmarks?.rightEye
-        self.convertPointsForFace(rightEye, faceBoundingBox, UIColor.white.cgColor)
+        self.drawLandmark(rightEye, faceBoundingBox, UIColor.white.cgColor)
         
         let nose = observation.landmarks?.nose
-        self.convertPointsForFace(nose, faceBoundingBox,her.skin.cgColor)
+        self.drawLandmark(nose, faceBoundingBox,her.skin.cgColor)
         
         let lips = observation.landmarks?.innerLips
-        self.convertPointsForFace(lips, faceBoundingBox, UIColor.red.cgColor)
+        self.drawLandmark(lips, faceBoundingBox, UIColor.red.cgColor)
         
         let leftEyebrow = observation.landmarks?.leftEyebrow
-        self.convertPointsForFace(leftEyebrow, faceBoundingBox, (her.hair ?? .black).cgColor)
+        self.drawLandmark(leftEyebrow, faceBoundingBox, (her.hair ?? .black).cgColor)
         
         let rightEyebrow = observation.landmarks?.rightEyebrow
-        self.convertPointsForFace(rightEyebrow, faceBoundingBox,(her.hair ?? .black).cgColor)
+        self.drawLandmark(rightEyebrow, faceBoundingBox,(her.hair ?? .black).cgColor)
         
         let noseCrest = observation.landmarks?.noseCrest
-        self.convertPointsForFace(noseCrest, faceBoundingBox, her.skin.cgColor)
+        self.drawLandmark(noseCrest, faceBoundingBox, her.skin.cgColor)
         
         let outerLips = observation.landmarks?.outerLips
-        self.convertPointsForFace(outerLips, faceBoundingBox, UIColor.red.cgColor)
+        self.drawLandmark(outerLips, faceBoundingBox, UIColor.red.cgColor)
         
         
         
     }
     
-    func convertPointsForFace(_ landmark: VNFaceLandmarkRegion2D?, _ boundingBox: CGRect, _ color:CGColor ) {
+    
+    func pointsForFace(_ landmark: VNFaceLandmarkRegion2D?, _ boundingBox: CGRect ) -> [CGPoint] {
         
-        guard let mark = landmark else { return }
+        guard let mark = landmark else { return [] }
         let points:[CGPoint] = mark.normalizedPoints
         
         let topSize = self.frame.size
         
-        guard !(points.isEmpty) else { return }
+        guard !(points.isEmpty) else { return  []}
         
         let convertedPoints:[CGPoint] = points.map{
             let b = CGPoint(x: topSize.width * ($0.x ), y: topSize.height * (1 - $0.y))
             return b
         }
         
-        self.draw(points:convertedPoints, color:color)
+        return convertedPoints
+        //self.draw(points:convertedPoints, color:color)
         
     }
     
+
     
-    func circleFace(_ landmark: VNFaceLandmarkRegion2D?, _ boundingBox: CGRect, _ color:CGColor ) {
+    func centerOf( landmark: VNFaceLandmarkRegion2D?, _ boundingBox: CGRect)->CGPoint?{
         
-        guard let mark = landmark else { return }
-        let points:[CGPoint] = mark.normalizedPoints
+        let convertedPoints = pointsForFace(landmark, boundingBox)
         
-        let topSize = self.frame.size
-        
-        guard !(points.isEmpty) else { return }
-        
-        let convertedPoints:[CGPoint] = points.map{
-            let b = CGPoint(x: topSize.width * ($0.x ), y: topSize.height * (1 - $0.y))
-            return b
-        }
-        
-        let fcount:CGFloat = CGFloat(points.count)
+        guard !convertedPoints.isEmpty else { return nil }
+        let fcount:CGFloat = CGFloat(convertedPoints.count)
         
         let sum = convertedPoints.reduce(CGPoint.zero, {CGPoint(x:$0.x + $1.x,y:$0.y + $1.y)})
         let center = CGPoint(x: sum.x/fcount, y: sum.y/fcount)
+        return center
+    }
+    
+    func drawCenter(_ landmark: VNFaceLandmarkRegion2D?, _ boundingBox: CGRect, _ color:CGColor ) {
+        
+        let convertedPoints = pointsForFace(landmark, boundingBox)
+        guard !convertedPoints.isEmpty else { return }
+        guard let centerFace = self.centerOf(landmark:landmark, boundingBox) else {return}
+        
         let ys = convertedPoints.map{return $0.y}
         let xs = convertedPoints.map{return $0.x}
         
         if let ymax = ys.max(), let ymin =  ys.min(), let  xmax = xs.max() , let xmin = xs.min()
-           
-            {
-                let radius = min(ymax-ymin,xmax-xmin) * 0.85
-                let newShape = CAShapeLayer()
-                newShape.path = UIBezierPath(arcCenter: center, radius: radius/2, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true).cgPath
-                newShape.fillColor = color
-                self.layer.addSublayer(newShape)
+            
+        {
+            let radius = min(ymax-ymin,xmax-xmin) * 0.85
+            let newShape = CAShapeLayer()
+            newShape.path = UIBezierPath(arcCenter: centerFace, radius: radius/2, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true).cgPath
+            newShape.fillColor = color
+            self.layer.addSublayer(newShape)
         }
         
         
-      
+        
         
     }
     
+    
+    func drawLandmark(_ landmark: VNFaceLandmarkRegion2D?, _ boundingBox: CGRect, _ color:CGColor ) {
+        
+        let convertedPoints = pointsForFace(landmark, boundingBox)
+        guard !convertedPoints.isEmpty else { return }
+        self.draw(points:convertedPoints, color:color)
+        
+    }
     
     func draw(points: [CGPoint],color:CGColor ) {
         let newLayer = CAShapeLayer()
@@ -218,7 +229,7 @@ class DetectedFaceView: UIImageView {
         self.layer.addSublayer(newLayer)
     }
     
-
+    
     
     
 }
@@ -241,9 +252,6 @@ extension DetectedFaceView {
     func makeLayers(face:VNFaceObservation){
         
         
-        
-       
-        
         let faceBoundingBox = self.frame
         let yjust:CGFloat = 1.2
         let scaleX  = faceBoundingBox.size.width / 60.0
@@ -253,11 +261,33 @@ extension DetectedFaceView {
         
         self.currentSettings.scaleX *= scaleX
         self.currentSettings.scaleY *= scaleY
+        self.currentSettings.yOff = +20
+        
         // let newy = scaleY * ((2*yOff) - (2 * y))
         
-        self.currentSettings.yOff = +20 //-faceBoundingBox.size.height * (yjust - 1)
-       // self.currentSettings.yOff   *= 1/(2*yjust)
-  
+        let leftEye = face.landmarks?.leftEye
+        let rightEye = face.landmarks?.rightEye
+        
+        if let leftEyeCent = centerOf(landmark: leftEye, faceBoundingBox),
+        let rightEyeCent = centerOf(landmark: rightEye, faceBoundingBox),
+            leftEyeCent.x != rightEyeCent.x {
+            
+            let eyeslope =  (leftEyeCent.y - rightEyeCent.y)/(leftEyeCent.x  - rightEyeCent.x)
+            let ang = atan(eyeslope)
+            
+            
+            let mideye = self.currentSettings.point(x:(10.0+41.0)/2,y:33.0)
+            var transform = CGAffineTransform(translationX: -mideye.x, y: -mideye.y)
+            transform = transform.concatenating(CGAffineTransform(rotationAngle: ang))
+            transform = transform.concatenating(CGAffineTransform(translationX: mideye.x, y: mideye.y))
+            self.currentSettings.transform = transform
+        }
+        
+        
+        
+        //-faceBoundingBox.size.height * (yjust - 1)
+        // self.currentSettings.yOff   *= 1/(2*yjust)
+        
         guard let spec = self.hero() else { return }
         
         
@@ -280,7 +310,7 @@ extension DetectedFaceView {
             
         }
         
-   
+        
         
         for f in spec.nodeMakers {
             let (_,fill,stroke,pathM) = f()
@@ -290,34 +320,34 @@ extension DetectedFaceView {
             
             newLayer.path = pathM()
             self.layer.addSublayer(newLayer)
-    
+            
             
         }
-        let leftEye = face.landmarks?.leftEye
-        self.convertPointsForFace(leftEye, faceBoundingBox, UIColor.white.cgColor)
-        self.circleFace(leftEye, faceBoundingBox, UIColor.black.cgColor)
         
-        let rightEye = face.landmarks?.rightEye
-        self.convertPointsForFace(rightEye, faceBoundingBox, UIColor.white.cgColor)
-        self.circleFace(rightEye, faceBoundingBox, UIColor.black.cgColor)
-       
+        self.drawLandmark(leftEye, faceBoundingBox, UIColor.white.cgColor)
+        self.drawCenter(leftEye, faceBoundingBox, UIColor.black.cgColor)
+        
+        
+        self.drawLandmark(rightEye, faceBoundingBox, UIColor.white.cgColor)
+        self.drawCenter(rightEye, faceBoundingBox, UIColor.black.cgColor)
+        
         
         let leftEyebrow = face.landmarks?.leftEyebrow
-        self.convertPointsForFace(leftEyebrow, faceBoundingBox, (spec.hair ?? .black).cgColor)
+        self.drawLandmark(leftEyebrow, faceBoundingBox, (spec.hair ?? .black).cgColor)
         
         let rightEyebrow = face.landmarks?.rightEyebrow
-        self.convertPointsForFace(rightEyebrow, faceBoundingBox,(spec.hair ?? .black).cgColor)
+        self.drawLandmark(rightEyebrow, faceBoundingBox,(spec.hair ?? .black).cgColor)
         
-
-    
+        
+        
         let outerLips = face.landmarks?.outerLips
-        self.convertPointsForFace(outerLips, faceBoundingBox, UIColor.red.cgColor)
+        self.drawLandmark(outerLips, faceBoundingBox, UIColor.red.cgColor)
         
         let nose = face.landmarks?.nose
-        self.convertPointsForFace(nose, faceBoundingBox,UIColor.clear.cgColor)
+        self.drawLandmark(nose, faceBoundingBox,UIColor.clear.cgColor)
         
         let lips = face.landmarks?.innerLips
-        self.convertPointsForFace(lips, faceBoundingBox, UIColor.white.cgColor)
+        self.drawLandmark(lips, faceBoundingBox, UIColor.white.cgColor)
         
         
     }

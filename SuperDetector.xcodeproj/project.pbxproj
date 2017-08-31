@@ -30,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		0E370CBA1F577447005BB560 /* Introduction.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = Introduction.md; path = SuperDetector/Doc/Introduction.md; sourceTree = SOURCE_ROOT; };
+		0E370CBC1F588068005BB560 /* CGA.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = CGA.playground; path = playgrounds/CGA.playground; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0E79E7FB1F33D4FA00387E47 /* SuperDetector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SuperDetector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0E79E7FE1F33D4FA00387E47 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0E79E8021F33D4FA00387E47 /* HeroDetectScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroDetectScene.swift; sourceTree = "<group>"; };
@@ -122,6 +123,7 @@
 				0E8722701F3919C500565E00 /* CharacterView.swift */,
 				0E87226E1F38DD1200565E00 /* OpeningViewController.swift */,
 				0E370CBA1F577447005BB560 /* Introduction.md */,
+				0E370CBC1F588068005BB560 /* CGA.playground */,
 			);
 			path = CollectionView;
 			sourceTree = "<group>";
