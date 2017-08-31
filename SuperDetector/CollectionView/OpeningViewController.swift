@@ -20,18 +20,11 @@ class OpeningViewController: UICollectionViewController {
     func reload(){
         hereos.removeAll()
         var d = DimensionSetting()
-        //d.scaleX = 0.25
-        //d.scaleY = 0.25
+
         d.normalize()
-        
-        d.yOff = -25
-        d.xOff = -35
-        d.scaleX *= 2
-        d.scaleY *= 2
-       // d.xOff = -75
-        //d.yTilt = -1
-       
-      
+
+        d.adjust(scaleX: 1, scaleY: -1, xOff: -35, yOff: -25)
+
         for (_,builder) in  CharacterSpec.makeCast() {
           hereos.append(builder(nil,d))
         }

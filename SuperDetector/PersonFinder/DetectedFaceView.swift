@@ -254,14 +254,12 @@ extension DetectedFaceView {
         
         let faceBoundingBox = self.frame
         let yjust:CGFloat = 1.2
-        let scaleX  = faceBoundingBox.size.width / 60.0
-        let scaleY = faceBoundingBox.size.height / 75.0 * yjust
+        let scaleX  = faceBoundingBox.size.width / 60.0/2
+        let scaleY = -faceBoundingBox.size.height / 75.0 * yjust/2
         
         self.currentSettings.normalize()
-        
-        self.currentSettings.scaleX *= scaleX
-        self.currentSettings.scaleY *= scaleY
-        self.currentSettings.yOff = +20
+
+        self.currentSettings.adjust(scaleX: scaleX, scaleY: scaleY, xOff: 0, yOff: 20)
         
         // let newy = scaleY * ((2*yOff) - (2 * y))
         
@@ -280,7 +278,7 @@ extension DetectedFaceView {
             var transform = CGAffineTransform(translationX: -mideye.x, y: -mideye.y)
             transform = transform.concatenating(CGAffineTransform(rotationAngle: ang))
             transform = transform.concatenating(CGAffineTransform(translationX: mideye.x, y: mideye.y))
-            self.currentSettings.transform = transform
+            self.currentSettings.transform = self.currentSettings.transform.concatenating(transform)
         }
         
         

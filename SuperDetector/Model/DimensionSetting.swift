@@ -11,74 +11,79 @@ import SpriteKit
 
 struct DimensionSetting {
     
-    var scaleX:CGFloat = 1
-    var scaleY:CGFloat = 1
-    var xOff:CGFloat = 50.0
-    var yOff:CGFloat = 50.0
+    var _scaleX:CGFloat = 1
+    var _scaleY:CGFloat = 1
+    var _xOff:CGFloat = 50.0
+    var _yOff:CGFloat = 50.0
+   
     
     var transform:CGAffineTransform = .identity
-
+   
     mutating func normalize(){
-        xOff = 0
-        yOff = 0
-        scaleX = 0.5
-        scaleY = -0.5
-        
+      // transform = .identity
+        adjust(scaleX: 0.5, scaleY: -0.5, xOff: 50.0, yOff: 50.0)
     }
     
-  
-    func point(x:CGFloat,y:CGFloat)->CGPoint{
-        let newx = scaleX * (x * 2 - xOff)
-        let newy = scaleY * ((2*yOff) - (2 * y))
-        let p =  CGPoint(x: newx, y: newy)
+    mutating func adjustScale(_ scaleX:CGFloat,scaleY:CGFloat){
+        adjust(scaleX: scaleX, scaleY: scaleY, xOff: 50.0, yOff: 50.0)
+    }
+    
+    mutating func adjust(scaleX:CGFloat,scaleY:CGFloat,xOff:CGFloat, yOff:CGFloat){
         
-       // print("\(p)")
-        return p.applying(self.transform)
+  
+        self._scaleX = scaleX
+        self._scaleY = scaleY
+        self._xOff = xOff
+        self._yOff = yOff
+        
+        let scaletran = CGAffineTransform(scaleX: 2 * scaleX, y:  -2 * scaleY)
+        let t = scaletran.concatenating(CGAffineTransform(translationX: -scaleX * xOff, y: scaleY * (2 * yOff)))
+        transform = t
+        
+    }
+    init(){
+
+        adjust(scaleX: 1, scaleY: 1, xOff: 50.0, yOff: 50.0)
+    }
+    
+    func point(x:CGFloat,y:CGFloat)->CGPoint{
+        let ret = CGPoint(x:x,y:y).applying(self.transform)
+        return ret
     }
     
     
     func convertRect(_ label:String, x:CGFloat,y:CGFloat,width:CGFloat,height:CGFloat)->CGRect{
         
-       
-        return batRect(x:x,y:y,width:width,height:height) /*
-        let newx = scaleX * (x * 2 - xOff)
-        let newy = scaleY * (y  - yOff )// 100 - (2 * y))
-        let origin = CGPoint(x:newx,y:newy)
-        
-        let size = CGSize(width: abs(width *  scaleX), height: abs( height * scaleY))
-        return CGRect(origin: origin, size: size)
- */
+        print(label)
+        return batRect(x:x,y:y,width:width,height:height)
         
     }
     
+
     func batRect(x:CGFloat,y:CGFloat,width:CGFloat,height:CGFloat)->CGRect{
-        /*
-        let newx = scaleX * (x * 2 - xOff)
-        let newy = scaleY * (y  - yOff )// 100 - (2 * y))
-        let origin = CGPoint(x:newx,y:newy)
-        */
         
-        let size = CGSize(width: abs(width * 2 * scaleX), height: abs(height * 2*scaleY))
         
+  
+        
+        let orpoin = point(x:0,y:0)
+        let basePoint = point(x:width,y:height)
+        let deltaPoint = CGPoint(x:basePoint.x - orpoin.x,y:basePoint.y - orpoin.y)
+        let height = abs(deltaPoint.y)
+        let size = CGSize(width: deltaPoint.x, height: height)
+      
         let origin:CGPoint
             
-        if scaleY < 0 {
+        if deltaPoint.y > 0 {
            origin = point(x: x, y: y)
         } else {
             origin = point(x: x, y: y + size.height)
         }
         let r = CGRect(origin: origin, size: size)
-        print("\(r)")
+
         return r
     }
-    
-    func faceRect  (x:CGFloat,y:CGFloat,width:CGFloat,height:CGFloat)->CGRect{
-        let newx = scaleX * (x * 2 - xOff)
-        let newy = scaleY * ( y  - ( 2 * yOff) ) // 100 - (2 * y)
-        let origin = CGPoint(x:newx,y:newy)
-        let size = CGSize(width: abs(width * 4 * scaleX), height: abs(height * 4 * scaleY))
-        return CGRect(origin: origin, size: size)
-    }
+
+
     
     func makeEar(x:CGFloat,y:CGFloat) ->CGPath{
         let rightEarPath = UIBezierPath()
@@ -112,35 +117,7 @@ struct DimensionSetting {
     
     
     func makeHead()->CGPath{
-        //let base = batPoint(x: x, y: y)
-        /*
-        let headPath = UIBezierPath(ovalIn: convertRect(x: x, y: y, width: 56, height: 68))
-        return headPath.cgPath
- */
-        
-        //x:4,y:6
-        /*
-        let x:CGFloat = 4.0
-        let y:CGFloat = 6.0
-        let width:CGFloat = 56.0
-        let height:CGFloat = 68.0
-        
-        let size = CGSize(width: abs(width * 2 * scaleX), height: abs(height * 2*scaleY))
-        let origin:CGPoint
-        
-        if scaleY < 0 {
-            origin = batPoint(x: x, y: y)
-        } else {
-            origin = batPoint(x: x, y: y + size.height + yOff)
-        }
-        
-        let r = CGRect(origin: origin, size: size)
-        
-        
-         print("making head with \(xOff) \(yOff) \(scaleX) \(scaleY) is \(r)")
-       let headPath = UIBezierPath(ovalIn: r)
-        return headPath.cgPath
- */
+
         let head2Path = UIBezierPath()
         head2Path.move(to: point(x: 60, y: 40))
         head2Path.addCurve(to: point(x: 32, y: 74), controlPoint1: point(x: 60, y: 58.78), controlPoint2: point(x: 47.46, y: 74))

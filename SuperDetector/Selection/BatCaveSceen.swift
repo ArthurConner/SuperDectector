@@ -110,9 +110,10 @@ class BatCaveSceen: SKScene, CharacterSelectable {
         
         self.lastUpdateTime = 0
         
-        dimset.scaleY = 0.5
-        dimset.scaleX = 0.5
-       // addItems()
+      
+        
+        dimset.adjust(scaleX: 0.5, scaleY: 0.5, xOff: 50.0, yOff: 50.0)
+       // addItems()50.0
   
     }
     

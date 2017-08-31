@@ -22,8 +22,7 @@ class HeroDetectorConroller: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        dimset.scaleY = 0.15
-        dimset.scaleX = 0.15
+        dimset.adjustScale(0.15, scaleY:015)
         
         // Set the view's delegate
         sceneView.delegate = self
