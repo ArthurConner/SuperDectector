@@ -22,8 +22,8 @@ class HeroDetectorConroller: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        dimset.adjustScale(0.15, scaleY:015)
-        
+        //dimset.adjustScale(0.15, scaleY:015)
+        dimset.adjust(scaleX: 0.2, scaleY: 0.2, xOff: 50, yOff: 50)
         // Set the view's delegate
         sceneView.delegate = self
         anim = FacialAnimator(settings:dimset)

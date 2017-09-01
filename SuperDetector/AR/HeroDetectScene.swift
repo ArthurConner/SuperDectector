@@ -19,7 +19,7 @@ class HeroDetectScene: SKScene {
     override func sceneDidLoad() {
         
        
-        dimset.adjustScale(0.15, scaleY:015)
+       // dimset.adjustScale(0.15, scaleY:015)
    
         self.anim = FacialAnimator(settings: dimset)
         // addItems()

@@ -11,79 +11,94 @@ import SpriteKit
 
 struct DimensionSetting {
     
-    var _scaleX:CGFloat = 1
-    var _scaleY:CGFloat = 1
-    var _xOff:CGFloat = 50.0
-    var _yOff:CGFloat = 50.0
-   
+    /*
+     var _scaleX:CGFloat = 1
+     var _scaleY:CGFloat = 1
+     var _xOff:CGFloat = 50.0
+     var _yOff:CGFloat = 50.0
+     */
     
     var transform:CGAffineTransform = .identity
-   
+    
     mutating func normalize(){
-      // transform = .identity
+        // transform = .identity
         adjust(scaleX: 0.5, scaleY: -0.5, xOff: 50.0, yOff: 50.0)
     }
     
-    mutating func adjustScale(_ scaleX:CGFloat,scaleY:CGFloat){
-        adjust(scaleX: scaleX, scaleY: scaleY, xOff: 50.0, yOff: 50.0)
-    }
+    /*
+     mutating func adjustScale(_ scaleX:CGFloat,scaleY:CGFloat){
+     adjust(scaleX: scaleX, scaleY: scaleY, xOff: 50.0, yOff: 50.0)
+     }
+     */
     
     mutating func adjust(scaleX:CGFloat,scaleY:CGFloat,xOff:CGFloat, yOff:CGFloat){
         
-  
-        self._scaleX = scaleX
-        self._scaleY = scaleY
-        self._xOff = xOff
-        self._yOff = yOff
-        
+        /*
+         self._scaleX = scaleX
+         self._scaleY = scaleY
+         self._xOff = xOff
+         self._yOff = yOff
+         */
         let scaletran = CGAffineTransform(scaleX: 2 * scaleX, y:  -2 * scaleY)
         let t = scaletran.concatenating(CGAffineTransform(translationX: -scaleX * xOff, y: scaleY * (2 * yOff)))
         transform = t
         
     }
     init(){
-
+        
         adjust(scaleX: 1, scaleY: 1, xOff: 50.0, yOff: 50.0)
     }
     
+    /*
+     func oldPoint(x:CGFloat,y:CGFloat)->CGPoint{
+     let newx = _scaleX * (x * 2 - _xOff)
+     let newy = _scaleY * ((2*_yOff) - (2 * y))
+     let p =  CGPoint(x: newx, y: newy)
+     
+     return p
+     }
+     */
+    
     func point(x:CGFloat,y:CGFloat)->CGPoint{
         let ret = CGPoint(x:x,y:y).applying(self.transform)
+        /*
+         let old = oldPoint(x: x, y: y)
+         if abs(ret.x - old.x) > 0.1 || abs(ret.y - old.y) > 0.1{
+         
+         print("mismatch \(ret) versus \(old)")
+         }
+         */
         return ret
     }
     
     
     func convertRect(_ label:String, x:CGFloat,y:CGFloat,width:CGFloat,height:CGFloat)->CGRect{
-        
         print(label)
         return batRect(x:x,y:y,width:width,height:height)
-        
     }
     
-
+    
     func batRect(x:CGFloat,y:CGFloat,width:CGFloat,height:CGFloat)->CGRect{
-        
-        
-  
         
         let orpoin = point(x:0,y:0)
         let basePoint = point(x:width,y:height)
         let deltaPoint = CGPoint(x:basePoint.x - orpoin.x,y:basePoint.y - orpoin.y)
         let height = abs(deltaPoint.y)
         let size = CGSize(width: deltaPoint.x, height: height)
-      
+        
         let origin:CGPoint
-            
+        
         if deltaPoint.y > 0 {
-           origin = point(x: x, y: y)
+            origin = point(x: x, y: y)
         } else {
             origin = point(x: x, y: y + size.height)
         }
         let r = CGRect(origin: origin, size: size)
-
+        print(r)
         return r
     }
-
-
+    
+    
     
     func makeEar(x:CGFloat,y:CGFloat) ->CGPath{
         let rightEarPath = UIBezierPath()
@@ -117,7 +132,7 @@ struct DimensionSetting {
     
     
     func makeHead()->CGPath{
-
+        
         let head2Path = UIBezierPath()
         head2Path.move(to: point(x: 60, y: 40))
         head2Path.addCurve(to: point(x: 32, y: 74), controlPoint1: point(x: 60, y: 58.78), controlPoint2: point(x: 47.46, y: 74))

@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		0E370CBB1F577447005BB560 /* Introduction.md in Resources */ = {isa = PBXBuildFile; fileRef = 0E370CBA1F577447005BB560 /* Introduction.md */; };
+		0E370CBF1F59FFB1005BB560 /* Math.md in Resources */ = {isa = PBXBuildFile; fileRef = 0E370CBE1F59FFB0005BB560 /* Math.md */; };
+		0E370CC21F59FFF9005BB560 /* Vision.md in Resources */ = {isa = PBXBuildFile; fileRef = 0E370CC01F59FFF9005BB560 /* Vision.md */; };
+		0E370CC31F59FFF9005BB560 /* AVFoundation.md in Resources */ = {isa = PBXBuildFile; fileRef = 0E370CC11F59FFF9005BB560 /* AVFoundation.md */; };
 		0E79E7FF1F33D4FA00387E47 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E79E7FE1F33D4FA00387E47 /* AppDelegate.swift */; };
 		0E79E8031F33D4FA00387E47 /* HeroDetectScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E79E8021F33D4FA00387E47 /* HeroDetectScene.swift */; };
 		0E79E8051F33D4FA00387E47 /* HeroDetectorConroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E79E8041F33D4FA00387E47 /* HeroDetectorConroller.swift */; };
@@ -31,6 +34,9 @@
 /* Begin PBXFileReference section */
 		0E370CBA1F577447005BB560 /* Introduction.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = Introduction.md; path = SuperDetector/Doc/Introduction.md; sourceTree = SOURCE_ROOT; };
 		0E370CBC1F588068005BB560 /* CGA.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = CGA.playground; path = playgrounds/CGA.playground; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		0E370CBE1F59FFB0005BB560 /* Math.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Math.md; sourceTree = "<group>"; };
+		0E370CC01F59FFF9005BB560 /* Vision.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Vision.md; sourceTree = "<group>"; };
+		0E370CC11F59FFF9005BB560 /* AVFoundation.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = AVFoundation.md; sourceTree = "<group>"; };
 		0E79E7FB1F33D4FA00387E47 /* SuperDetector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SuperDetector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0E79E7FE1F33D4FA00387E47 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0E79E8021F33D4FA00387E47 /* HeroDetectScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroDetectScene.swift; sourceTree = "<group>"; };
@@ -64,6 +70,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0E370CBD1F59FFB0005BB560 /* Doc */ = {
+			isa = PBXGroup;
+			children = (
+				0E370CBA1F577447005BB560 /* Introduction.md */,
+				0E370CC11F59FFF9005BB560 /* AVFoundation.md */,
+				0E370CC01F59FFF9005BB560 /* Vision.md */,
+				0E370CBE1F59FFB0005BB560 /* Math.md */,
+			);
+			path = Doc;
+			sourceTree = "<group>";
+		};
 		0E79E7F21F33D4FA00387E47 = {
 			isa = PBXGroup;
 			children = (
@@ -90,6 +107,7 @@
 				0E7F825A1F3B78070069B6F6 /* Selection */,
 				0E7F82591F3B77EA0069B6F6 /* AR */,
 				0E79E8061F33D4FA00387E47 /* Main.storyboard */,
+				0E370CBD1F59FFB0005BB560 /* Doc */,
 				0E79E8091F33D4FA00387E47 /* Assets.xcassets */,
 				0E79E80B1F33D4FA00387E47 /* LaunchScreen.storyboard */,
 				0E79E80E1F33D4FA00387E47 /* Info.plist */,
@@ -122,7 +140,6 @@
 			children = (
 				0E8722701F3919C500565E00 /* CharacterView.swift */,
 				0E87226E1F38DD1200565E00 /* OpeningViewController.swift */,
-				0E370CBA1F577447005BB560 /* Introduction.md */,
 				0E370CBC1F588068005BB560 /* CGA.playground */,
 			);
 			path = CollectionView;
@@ -206,12 +223,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0E370CC21F59FFF9005BB560 /* Vision.md in Resources */,
 				0E370CBB1F577447005BB560 /* Introduction.md in Resources */,
 				0E8722691F34D20B00565E00 /* BatCave.sks in Resources */,
 				0E7F82581F3B76650069B6F6 /* HeroDetectScene.sks in Resources */,
 				0E79E80D1F33D4FA00387E47 /* LaunchScreen.storyboard in Resources */,
 				0E79E80A1F33D4FA00387E47 /* Assets.xcassets in Resources */,
 				0E79E8081F33D4FA00387E47 /* Main.storyboard in Resources */,
+				0E370CC31F59FFF9005BB560 /* AVFoundation.md in Resources */,
+				0E370CBF1F59FFB1005BB560 /* Math.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

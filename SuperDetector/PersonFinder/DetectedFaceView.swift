@@ -32,14 +32,11 @@ class DetectedFaceView: UIImageView {
         guard heroIndex >= 0 && heroIndex < cast.count else { return nil }
         let (_,builder) =  cast[heroIndex]
         return builder(nil, currentSettings)
-        
     }
     
     func load(index :Int){
         
         heroIndex = index
-        
-        
         if useImage {
             if let hero = self.hero() {
                 self.image = hero.image()
@@ -67,7 +64,6 @@ class DetectedFaceView: UIImageView {
     }
     
     func enable(detected:VNFaceObservation){
-        
         self.alpha = 1
         self.face = detected
         let c = detected.boundingBox
@@ -95,53 +91,11 @@ class DetectedFaceView: UIImageView {
             }
             
             makeLayers(face: detected)
-            
-            // detectLandmarks(detected)
+
         }
         
     }
-    
-    
-    func detectLandmarks(_ observation:VNFaceObservation) {
-        
-        guard let her = self.hero() else {
-            return
-        }
-        let faceBoundingBox = self.frame
-        
-        //different types of landmarks
-        // let faceContour = observation.landmarks?.faceContour
-        //self.convertPointsForFace(faceContour, faceBoundingBox, her.skin.cgColor)
-        
-        let leftEye = observation.landmarks?.leftEye
-        self.drawLandmark(leftEye, faceBoundingBox, UIColor.white.cgColor)
-        
-        let rightEye = observation.landmarks?.rightEye
-        self.drawLandmark(rightEye, faceBoundingBox, UIColor.white.cgColor)
-        
-        let nose = observation.landmarks?.nose
-        self.drawLandmark(nose, faceBoundingBox,her.skin.cgColor)
-        
-        let lips = observation.landmarks?.innerLips
-        self.drawLandmark(lips, faceBoundingBox, UIColor.red.cgColor)
-        
-        let leftEyebrow = observation.landmarks?.leftEyebrow
-        self.drawLandmark(leftEyebrow, faceBoundingBox, (her.hair ?? .black).cgColor)
-        
-        let rightEyebrow = observation.landmarks?.rightEyebrow
-        self.drawLandmark(rightEyebrow, faceBoundingBox,(her.hair ?? .black).cgColor)
-        
-        let noseCrest = observation.landmarks?.noseCrest
-        self.drawLandmark(noseCrest, faceBoundingBox, her.skin.cgColor)
-        
-        let outerLips = observation.landmarks?.outerLips
-        self.drawLandmark(outerLips, faceBoundingBox, UIColor.red.cgColor)
-        
-        
-        
-    }
-    
-    
+
     func pointsForFace(_ landmark: VNFaceLandmarkRegion2D?, _ boundingBox: CGRect ) -> [CGPoint] {
         
         guard let mark = landmark else { return [] }
@@ -157,12 +111,10 @@ class DetectedFaceView: UIImageView {
         }
         
         return convertedPoints
-        //self.draw(points:convertedPoints, color:color)
-        
+
     }
     
 
-    
     func centerOf( landmark: VNFaceLandmarkRegion2D?, _ boundingBox: CGRect)->CGPoint?{
         
         let convertedPoints = pointsForFace(landmark, boundingBox)
@@ -184,19 +136,14 @@ class DetectedFaceView: UIImageView {
         let ys = convertedPoints.map{return $0.y}
         let xs = convertedPoints.map{return $0.x}
         
-        if let ymax = ys.max(), let ymin =  ys.min(), let  xmax = xs.max() , let xmin = xs.min()
-            
-        {
+        if let ymax = ys.max(), let ymin =  ys.min(), let  xmax = xs.max() , let xmin = xs.min() {
             let radius = min(ymax-ymin,xmax-xmin) * 0.85
             let newShape = CAShapeLayer()
             newShape.path = UIBezierPath(arcCenter: centerFace, radius: radius/2, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true).cgPath
             newShape.fillColor = color
             self.layer.addSublayer(newShape)
         }
-        
-        
-        
-        
+
     }
     
     
@@ -228,41 +175,21 @@ class DetectedFaceView: UIImageView {
         
         self.layer.addSublayer(newLayer)
     }
-    
-    
-    
-    
+
 }
 
 extension DetectedFaceView {
     
-    
-    /*
-     func makeFace() ->CGPath{
-     let facePath = UIBezierPath()
-     facePath.move(to: batPoint(x: 59.81, y: 44))
-     facePath.addCurve(to: batPoint(x: 32, y: 74), controlPoint1: batPoint(x: 58.18, y: 60.89), controlPoint2: batPoint(x: 46.35, y: 74))
-     facePath.addCurve(to: batPoint(x: 4.19, y: 44), controlPoint1: batPoint(x: 17.65, y: 74), controlPoint2: batPoint(x: 5.82, y: 60.89))
-     facePath.addLine(to: batPoint(x: 59.81, y: 44))
-     facePath.close()
-     return facePath.cgPath
-     }
-     */
-    
+
     func makeLayers(face:VNFaceObservation){
-        
         
         let faceBoundingBox = self.frame
         let yjust:CGFloat = 1.2
         let scaleX  = faceBoundingBox.size.width / 60.0/2
         let scaleY = -faceBoundingBox.size.height / 75.0 * yjust/2
-        
-        self.currentSettings.normalize()
 
         self.currentSettings.adjust(scaleX: scaleX, scaleY: scaleY, xOff: 0, yOff: 20)
-        
-        // let newy = scaleY * ((2*yOff) - (2 * y))
-        
+
         let leftEye = face.landmarks?.leftEye
         let rightEye = face.landmarks?.rightEye
         
@@ -272,22 +199,15 @@ extension DetectedFaceView {
             
             let eyeslope =  (leftEyeCent.y - rightEyeCent.y)/(leftEyeCent.x  - rightEyeCent.x)
             let ang = atan(eyeslope)
-            
-            
             let mideye = self.currentSettings.point(x:(10.0+41.0)/2,y:33.0)
+            
             var transform = CGAffineTransform(translationX: -mideye.x, y: -mideye.y)
             transform = transform.concatenating(CGAffineTransform(rotationAngle: ang))
             transform = transform.concatenating(CGAffineTransform(translationX: mideye.x, y: mideye.y))
             self.currentSettings.transform = self.currentSettings.transform.concatenating(transform)
         }
-        
-        
-        
-        //-faceBoundingBox.size.height * (yjust - 1)
-        // self.currentSettings.yOff   *= 1/(2*yjust)
-        
+
         guard let spec = self.hero() else { return }
-        
         
         let b = spec.headMaker
         let head = CAShapeLayer()
@@ -297,7 +217,6 @@ extension DetectedFaceView {
         
         if let f  = spec.faceMaker {
             let p = f()
-            //print("\(p)")
             
             let newLayer = CAShapeLayer()
             newLayer.fillColor = spec.skin.cgColor
@@ -325,19 +244,15 @@ extension DetectedFaceView {
         self.drawLandmark(leftEye, faceBoundingBox, UIColor.white.cgColor)
         self.drawCenter(leftEye, faceBoundingBox, UIColor.black.cgColor)
         
-        
         self.drawLandmark(rightEye, faceBoundingBox, UIColor.white.cgColor)
         self.drawCenter(rightEye, faceBoundingBox, UIColor.black.cgColor)
-        
         
         let leftEyebrow = face.landmarks?.leftEyebrow
         self.drawLandmark(leftEyebrow, faceBoundingBox, (spec.hair ?? .black).cgColor)
         
         let rightEyebrow = face.landmarks?.rightEyebrow
         self.drawLandmark(rightEyebrow, faceBoundingBox,(spec.hair ?? .black).cgColor)
-        
-        
-        
+
         let outerLips = face.landmarks?.outerLips
         self.drawLandmark(outerLips, faceBoundingBox, UIColor.red.cgColor)
         
@@ -346,8 +261,7 @@ extension DetectedFaceView {
         
         let lips = face.landmarks?.innerLips
         self.drawLandmark(lips, faceBoundingBox, UIColor.white.cgColor)
-        
-        
+ 
     }
     
     
